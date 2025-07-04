@@ -1,5 +1,3 @@
 import { io } from 'socket.io-client';
 
-const URL = 'http://192.168.1.239:3000';
-
-export const socket = io(URL);
+export const socket = io(import.meta.env.VITE_SOCKET_URL);

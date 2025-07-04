@@ -2,12 +2,14 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SocketIoAdapter } from './utils/socket-io.adapter';
 import { AppDataSource } from './data-source';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   await AppDataSource.initialize();
   const app = await NestFactory.create(AppModule);
-  app.useWebSocketAdapter(new SocketIoAdapter(app));
-  await app.listen(process.env.PORT ?? 3000);
+  const configService = app.get(ConfigService);
+  app.useWebSocketAdapter(new SocketIoAdapter(app, configService));
+  await app.listen(configService.get<string>('PORT') ?? 3000, '0.0.0.0');
 }
 
 void bootstrap();
