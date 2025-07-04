@@ -1,0 +1,19 @@
+.list {
+  list-style: none;
+  padding: 0 0.5rem 5rem 1rem;
+}
+
+.empty {
+  color: var(--text-foreground-inactive);
+  text-align: center;
+  vertical-align: middle;
+  font-style: italic;
+  opacity: 0;
+  animation: fadeIn 0.2s ease-in 0.2s forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
