@@ -6,7 +6,6 @@ import {
 import { Server, Socket } from 'socket.io';
 import { AddGroceryItemService } from './addGroceryItem.service';
 import { GroceryAddRequest } from 'src/models/GroceryAddRequest';
-import { groceryRepo } from 'src/utils/db.repo';
 
 @WebSocketGateway()
 export class AddGroceryItemGateway {
@@ -19,12 +18,7 @@ export class AddGroceryItemGateway {
     client: Socket,
     payload: GroceryAddRequest,
   ): Promise<void> {
-    const existingItem = await groceryRepo
-      .createQueryBuilder('item')
-      .where('TRIM(LOWER(item.name)) = TRIM(LOWER(:name))', {
-        name: payload.name,
-      })
-      .getOne();
+    const existingItem = await this.service.getExistingEntity(payload);
 
     if (existingItem) {
       this.server.emit(

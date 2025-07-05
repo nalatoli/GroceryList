@@ -39,7 +39,7 @@ export default function GroceryItem({
       const touch = e.touches[0];
       startPos.current = { x: touch.pageX, y: touch.pageY };
 
-      longPressTimeout.current = setTimeout(() => {
+      longPressTimeout.current = window.setTimeout(() => {
         setMenuPos({
           x: Math.max(0, touch.pageX - 130),
           y: touch.pageY,

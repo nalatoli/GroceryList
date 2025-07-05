@@ -1,16 +1,18 @@
-import { Injectable } from '@nestjs/common';
-import { Aisle } from 'src/models/Aisle';
+import { Inject, Injectable } from '@nestjs/common';
+import { Aisle, AisleEntity } from 'src/models/Aisle';
 import { Grocery } from 'src/models/Grocery';
-import { groceryInfoRepo, aisleRepo } from 'src/utils/db.repo';
+import { GroceryInfoEntity } from 'src/models/GroceryInfo';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class UpdateGroceryAisleService {
+  constructor(@Inject('DATA_SOURCE') private readonly dataSource: DataSource) {}
   async updateGroceryAisle(payload: {
     grocery: Grocery;
     aisle: Aisle | undefined;
   }): Promise<Aisle[]> {
     if (payload.aisle) {
-      await groceryInfoRepo.upsert(
+      await this.dataSource.getRepository(GroceryInfoEntity).upsert(
         {
           name: payload.grocery.name,
           aisle: payload.aisle ? { id: payload.aisle.idx } : undefined,
@@ -18,7 +20,8 @@ export class UpdateGroceryAisleService {
         ['name'],
       );
     } else {
-      await groceryInfoRepo
+      await this.dataSource
+        .getRepository(GroceryInfoEntity)
         .createQueryBuilder()
         .delete()
         .where('TRIM(LOWER(name)) = TRIM(LOWER(:name))', {
@@ -27,7 +30,11 @@ export class UpdateGroceryAisleService {
         .execute();
     }
 
-    return (await aisleRepo.find({ relations: ['groceryInfos'] })).map((e) => {
+    return (
+      await this.dataSource
+        .getRepository(AisleEntity)
+        .find({ relations: ['groceryInfos'] })
+    ).map((e) => {
       return {
         idx: e.id,
         name: e.name,

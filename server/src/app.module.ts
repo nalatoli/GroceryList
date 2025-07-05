@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { DatabaseModule } from './modules/database/database.module';
 import { GetGrocerySetGateway } from './modules/getGrocerySet/getGrocerySet.gateway';
 import { GetGrocerySetService } from './modules/getGrocerySet/getGrocerySet.service';
 import { UpdateGroceryItemGateway } from './modules/updateGroceryItem/updateGroceryItem.gateway';
@@ -19,8 +20,9 @@ import { ResetGrocerySetService } from './modules/resetGrocerySet/resetGrocerySe
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env.local'],
+      envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
     }),
+    DatabaseModule,
   ],
   providers: [
     GetGrocerySetGateway,
