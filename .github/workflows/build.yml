@@ -47,19 +47,8 @@ jobs:
       # Frontend (Vite)
       # ──────────────────────────────────────
 
-      - name: Install frontend dependencies
-        working-directory: ./client
-        run: npm ci
-
-      - name: Build frontend
-        working-directory: ./client
-        run: npm run build
-
-      - name: Upload frontend dist artifact
+      - name: Upload frontend artifact
         uses: actions/upload-artifact@v4
         with:
-          name: frontend-dist
-          path: |
-            client/dist/
-            client/package.json
-            client/package-lock.json
+          name: frontend
+          path: client
