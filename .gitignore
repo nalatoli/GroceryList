@@ -14,8 +14,6 @@ dist-ssr
 /.pnp
 .pnp.js
 *.db
-.env.development
-.env.production
 
 # Editor directories and files
 **/.vscode/*

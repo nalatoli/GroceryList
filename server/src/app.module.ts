@@ -20,7 +20,7 @@ import { ResetGrocerySetService } from './modules/resetGrocerySet/resetGrocerySe
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
+      envFilePath: '.env.local',
     }),
     DatabaseModule,
   ],
