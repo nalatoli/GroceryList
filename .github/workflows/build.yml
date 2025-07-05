@@ -38,7 +38,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: backend-dist
-          path: server/dist/
+          path: |
+            server/dist/
+            server/package.json
+            server/package-lock.json
 
       # ──────────────────────────────────────
       # Frontend (Vite)
@@ -56,4 +59,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: frontend-dist
-          path: client/dist/
+          path: |
+            client/dist/
+            server/package.json
+            server/package-lock.json
