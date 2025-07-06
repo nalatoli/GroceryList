@@ -1,11 +1,13 @@
 import './App.css';
+import { useParams } from 'react-router-dom';
 import useGroceries from './tools/groceriesApi';
 import GroceryList from './components/GroceryList/GroceryList';
 import ComboboxTextInput from './components/TextInput/ComboboxTextInput';
 import TextInput from './components/TextInput/TextInput';
 
 export default function App() {
-  const groceriesApi = useGroceries();
+  const { shopperId } = useParams();
+  const groceriesApi = useGroceries(Number(shopperId) || 1);
 
   return (
     <>

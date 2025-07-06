@@ -13,9 +13,13 @@ export class AddGroceryItemService {
     return await this.dataSource
       .getRepository(GroceryEntity)
       .createQueryBuilder('item')
-      .where('TRIM(LOWER(item.name)) = TRIM(LOWER(:name))', {
-        name: payload.name,
-      })
+      .leftJoinAndSelect('item.shopper', 'shopper')
+      .where(
+        `shopper.id = :shopperId AND TRIM(LOWER(item.name)) = TRIM(LOWER(:name))`,
+        {
+          name: payload.name,
+        },
+      )
       .getOne();
   }
 
@@ -24,11 +28,14 @@ export class AddGroceryItemService {
       isChecked: false,
       name: payload.name,
       quantity: payload.quantity,
+      shopper: {
+        id: payload.shopperId,
+      },
     });
 
     const dto = await this.dataSource.getRepository(GroceryEntity).findOne({
       where: { id: result.id },
-      relations: { aisle: true },
+      relations: { shopper: true },
     });
 
     if (!dto) {
@@ -40,6 +47,10 @@ export class AddGroceryItemService {
       isChecked: dto.isChecked,
       name: dto.name,
       quantity: dto.quantity,
+      shopper: {
+        idx: dto.shopper.id,
+        name: dto.shopper.name,
+      },
     };
   }
 
@@ -62,6 +73,10 @@ export class AddGroceryItemService {
       isChecked: existingItem.isChecked,
       name: payload.name,
       quantity: payload.quantity,
+      shopper: {
+        idx: existingItem.shopper.id,
+        name: existingItem.shopper.name,
+      },
     };
   }
 }

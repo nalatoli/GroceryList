@@ -17,7 +17,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "db:migrate:gen": "typeorm-ts-node-commonjs migration:generate ./src/migrations/init-grocery -d ./src/data-source.ts",
+    "db:migrate:gen": "typeorm-ts-node-commonjs migration:generate ./src/migrations/init-grocery -d ./src/modules/database/database.source.ts",
     "db:migrate:run": "typeorm-ts-node-commonjs migration:run -d ./src/data-source.ts",
     "db:migrate:revert": "typeorm-ts-node-commonjs migration:revert  -d ./src/data-source.ts"
   },

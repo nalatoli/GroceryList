@@ -13,7 +13,7 @@ export class GetGrocerySetGateway {
   constructor(private readonly service: GetGrocerySetService) {}
 
   @SubscribeMessage('getGroceryList')
-  async handleMessage(client: Socket): Promise<void> {
-    client.emit('getGroceryList', await this.service.getGrocerySet());
+  async handleMessage(client: Socket, payload: number): Promise<void> {
+    client.emit('getGroceryList', await this.service.getGrocerySet(payload));
   }
 }

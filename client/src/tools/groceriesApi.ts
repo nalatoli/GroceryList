@@ -6,7 +6,7 @@ import { socket } from './socket';
 import { type Aisle, AisleSchema } from '../models/Aisle';
 import { z } from 'zod/v4';
 
-export default function useGroceries() {
+export default function useGroceries(shopperId: number) {
   const [grocerySet, setGrocerySet] = useState<GrocerySet>({
     items: [],
     aisles: [],
@@ -17,7 +17,7 @@ export default function useGroceries() {
   useEffect(() => {
     const handlers = {
       connect: () => {
-        socket.emit('getGroceryList');
+        socket.emit('getGroceryList', shopperId);
       },
 
       getGroceryList: (payload: unknown) => {
@@ -79,6 +79,7 @@ export default function useGroceries() {
     const request: GroceryAddRequest = {
       name: nameText,
       quantity: quantityText || '1',
+      shopperId: shopperId,
     };
     setNameText('');
     setQuantityText('');
