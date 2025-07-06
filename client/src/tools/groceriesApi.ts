@@ -73,7 +73,7 @@ export default function useGroceries(shopperId: number) {
         socket.off(event, handler);
       }
     };
-  }, []);
+  }, [shopperId]);
 
   const addGrocery = () => {
     const request: GroceryAddRequest = {
