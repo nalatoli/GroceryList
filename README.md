@@ -1,4 +1,4 @@
-# 🛒 GrocerySync
+# 🛒 GroceryList
 
 A real-time collaborative **grocery list app** powered by **React + Vite** on the frontend and **NestJS** on the backend. Built for speed, minimalism, and synchronization across all your devices.
 
