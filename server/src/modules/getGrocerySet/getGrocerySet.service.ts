@@ -2,21 +2,34 @@ import { Inject, Injectable } from '@nestjs/common';
 import { AisleEntity } from 'src/models/Aisle';
 import { GroceryEntity } from 'src/models/Grocery';
 import { GrocerySet } from 'src/models/GrocerySet';
+import { ShopperEntity } from 'src/models/Shopper';
 import { DataSource } from 'typeorm';
 
 @Injectable()
 export class GetGrocerySetService {
   constructor(@Inject('DATA_SOURCE') private readonly dataSource: DataSource) {}
   async getGrocerySet(payload: number): Promise<GrocerySet> {
+    const shopperEntity = await this.dataSource
+      .getRepository(ShopperEntity)
+      .findOne({
+        where: { id: payload },
+      });
+
+    if (!shopperEntity) throw Error('No shopper found');
+
+    const groceryEntities = await this.dataSource
+      .getRepository(GroceryEntity)
+      .createQueryBuilder('item')
+      .leftJoinAndSelect('item.shopper', 'shopper')
+      .where('shopper.id = :shopperId', { shopperId: payload })
+      .getMany();
+
+    const aisleEntities = await this.dataSource
+      .getRepository(AisleEntity)
+      .find({ relations: ['groceryInfos'] });
+
     return {
-      items: (
-        await this.dataSource
-          .getRepository(GroceryEntity)
-          .createQueryBuilder('item')
-          .leftJoinAndSelect('item.shopper', 'shopper')
-          .where('shopper.id = :shopperId', { shopperId: payload })
-          .getMany()
-      ).map((e) => {
+      items: groceryEntities.map((e) => {
         return {
           idx: e.id,
           isChecked: e.isChecked,
@@ -34,11 +47,7 @@ export class GetGrocerySetService {
           },
         };
       }),
-      aisles: (
-        await this.dataSource
-          .getRepository(AisleEntity)
-          .find({ relations: ['groceryInfos'] })
-      ).map((e) => {
+      aisles: aisleEntities.map((e) => {
         return {
           idx: e.id,
           name: e.name,
@@ -51,6 +60,10 @@ export class GetGrocerySetService {
           }),
         };
       }),
+      shopper: {
+        idx: shopperEntity.id,
+        name: shopperEntity.name,
+      },
     };
   }
 }

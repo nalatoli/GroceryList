@@ -47,7 +47,7 @@ export default function App() {
               className="button"
               disabled={groceriesApi.nameText.trim() === ''}
             >
-              Add
+              Add to {groceriesApi.shopperText}'s List
             </button>
           </div>
         </div>

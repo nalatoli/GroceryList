@@ -10,9 +10,14 @@ export default function useGroceries(shopperId: number) {
   const [grocerySet, setGrocerySet] = useState<GrocerySet>({
     items: [],
     aisles: [],
+    shopper: {
+      idx: 1,
+      name: '',
+    },
   });
   const [nameText, setNameText] = useState('');
   const [quantityText, setQuantityText] = useState('');
+  const [shopperText, setShopperText] = useState('');
 
   useEffect(() => {
     const handlers = {
@@ -21,7 +26,9 @@ export default function useGroceries(shopperId: number) {
       },
 
       getGroceryList: (payload: unknown) => {
-        setGrocerySet(GrocerySetSchema.parse(payload));
+        const grocerySet = GrocerySetSchema.parse(payload);
+        setGrocerySet(grocerySet);
+        setShopperText(grocerySet.shopper.name);
       },
 
       groceryItemUpdated: (payload: unknown) => {
@@ -111,6 +118,7 @@ export default function useGroceries(shopperId: number) {
     groceries: grocerySet,
     nameText,
     quantityText,
+    shopperText,
     setNameText,
     setQuantityText,
     addGrocery,
