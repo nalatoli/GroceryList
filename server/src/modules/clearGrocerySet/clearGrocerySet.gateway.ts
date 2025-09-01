@@ -15,7 +15,7 @@ export class ClearGrocerySetGateway {
 
   @SubscribeMessage('clearGroceryList')
   async handleMessage(client: Socket, payload: number): Promise<void> {
-    await this.service.clearGrocerySet();
+    await this.service.clearGrocerySet(payload);
     this.server.to(getShopperRoom(payload)).emit('clearGroceryList');
   }
 }

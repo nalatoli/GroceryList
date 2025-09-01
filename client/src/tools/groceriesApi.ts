@@ -61,10 +61,12 @@ export default function useGroceries(shopperId: number) {
       },
 
       clearGroceryList: () => {
+        console.log('Clearing');
         setGrocerySet((prev) => ({ ...prev, items: [] }));
       },
 
       resetGroceryList: () => {
+        console.log('Resetting');
         setGrocerySet((prev) => ({
           ...prev,
           items: prev.items.map((g) => ({ ...g, isChecked: false })),

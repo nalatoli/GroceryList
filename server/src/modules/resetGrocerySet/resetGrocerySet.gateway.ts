@@ -15,7 +15,7 @@ export class ResetGrocerySetGateway {
 
   @SubscribeMessage('resetGroceryList')
   async handleMessage(client: Socket, payload: number): Promise<void> {
-    await this.service.resetGrocerySet();
+    await this.service.resetGrocerySet(payload);
     this.server.to(getShopperRoom(payload)).emit('resetGroceryList');
   }
 }
