@@ -27,6 +27,7 @@ export default function useGroceries(shopperId: number) {
 
       getGroceryList: (payload: unknown) => {
         const grocerySet = GrocerySetSchema.parse(payload);
+        console.log(grocerySet);
         setGrocerySet(grocerySet);
         setShopperText(grocerySet.shopper.name);
       },
