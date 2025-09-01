@@ -15,7 +15,7 @@ export class GetGrocerySetGateway {
     console.log('[WS] GetGrocerySetGateway constructed');
   }
 
-  @SubscribeMessage('registerGroceryList')
+  @SubscribeMessage('getGroceryList')
   async handleMessage(client: Socket, payload: number): Promise<void> {
     console.log(`Client joining shopper room ${payload}`);
     await client.join(getShopperRoom(payload));
