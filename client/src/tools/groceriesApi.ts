@@ -21,10 +21,11 @@ export default function useGroceries(shopperId: number) {
 
   useEffect(() => {
     const onConnect = () => {
+      console.log(`Connecting as shopper ${shopperId}`);
       socket.emit('registerGroceryList', shopperId);
     };
 
-    socket.once('connect', onConnect);
+    socket.on('connect', onConnect);
 
     const getGroceryList = (payload: unknown) => {
       const grocerySet = GrocerySetSchema.parse(payload);
