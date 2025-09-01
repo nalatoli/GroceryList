@@ -87,7 +87,7 @@ export default function useGroceries(shopperId: number) {
       socket.off('clearGroceryList', clearGroceryList);
       socket.off('resetGroceryList', resetGroceryList);
     };
-  }, [shopperId]);
+  }, []);
 
   const addGrocery = () => {
     const request: GroceryAddRequest = {
