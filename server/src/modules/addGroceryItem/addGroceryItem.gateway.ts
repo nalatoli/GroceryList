@@ -6,6 +6,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { AddGroceryItemService } from './addGroceryItem.service';
 import { GroceryAddRequest } from 'src/models/GroceryAddRequest';
+import { getShopperRoom } from 'src/utils/shared.service';
 
 @WebSocketGateway()
 export class AddGroceryItemGateway {
@@ -21,15 +22,16 @@ export class AddGroceryItemGateway {
     const existingItem = await this.service.getExistingEntity(payload);
 
     if (existingItem) {
-      this.server.emit(
-        'groceryItemUpdated',
-        await this.service.getExistingGroceryItem(payload, existingItem),
-      );
+      this.server
+        .to(getShopperRoom(payload.shopperId))
+        .emit(
+          'groceryItemUpdated',
+          await this.service.getExistingGroceryItem(payload, existingItem),
+        );
     } else {
-      this.server.emit(
-        'addGroceryItem',
-        await this.service.getNewGroceryItem(payload),
-      );
+      this.server
+        .to(getShopperRoom(payload.shopperId))
+        .emit('addGroceryItem', await this.service.getNewGroceryItem(payload));
     }
   }
 }

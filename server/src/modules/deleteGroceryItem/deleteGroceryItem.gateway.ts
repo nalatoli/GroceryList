@@ -6,6 +6,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { DeleteGroceryItemService } from './deleteGroceryItem.service';
 import { Grocery } from 'src/models/Grocery';
+import { getShopperRoom } from 'src/utils/shared.service';
 
 @WebSocketGateway()
 export class DeleteGroceryItemGateway {
@@ -15,9 +16,11 @@ export class DeleteGroceryItemGateway {
 
   @SubscribeMessage('deleteGroceryItem')
   async handleMessage(client: Socket, payload: Grocery): Promise<void> {
-    this.server.emit(
-      'groceryItemDeleted',
-      await this.service.deleteGroceryItem(payload),
-    );
+    this.server
+      .to(getShopperRoom(payload.shopper.idx))
+      .emit(
+        'groceryItemDeleted',
+        await this.service.deleteGroceryItem(payload),
+      );
   }
 }

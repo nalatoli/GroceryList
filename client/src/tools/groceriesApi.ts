@@ -20,65 +20,71 @@ export default function useGroceries(shopperId: number) {
   const [shopperText, setShopperText] = useState('');
 
   useEffect(() => {
-    const handlers = {
-      connect: () => {
-        socket.emit('getGroceryList', shopperId);
-      },
-
-      getGroceryList: (payload: unknown) => {
-        const grocerySet = GrocerySetSchema.parse(payload);
-        setGrocerySet(grocerySet);
-        setShopperText(grocerySet.shopper.name);
-      },
-
-      groceryItemUpdated: (payload: unknown) => {
-        const data = GrocerySchema.parse(payload);
-        setGrocerySet((prev) => ({
-          ...prev,
-          items: prev.items.map((g) =>
-            g.idx === data.idx ? { ...g, ...data } : g,
-          ),
-        }));
-      },
-
-      groceryAisleUpdated: (payload: unknown) => {
-        const data = z.array(AisleSchema).parse(payload);
-        setGrocerySet((prev) => ({ ...prev, aisles: data }));
-      },
-
-      groceryItemDeleted: (payload: unknown) => {
-        const data = GrocerySchema.parse(payload);
-        setGrocerySet((prev) => ({
-          ...prev,
-          items: prev.items.filter((g) => g.idx !== data.idx),
-        }));
-      },
-
-      addGroceryItem: (payload: unknown) => {
-        const data = GrocerySchema.parse(payload);
-        setGrocerySet((prev) => ({ ...prev, items: [...prev.items, data] }));
-      },
-
-      clearGroceryList: () => {
-        setGrocerySet((prev) => ({ ...prev, items: [] }));
-      },
-
-      resetGroceryList: () => {
-        setGrocerySet((prev) => ({
-          ...prev,
-          items: prev.items.map((g) => ({ ...g, isChecked: false })),
-        }));
-      },
+    const onConnect = () => {
+      socket.emit('registerGroceryList', shopperId);
     };
 
-    for (const [event, handler] of Object.entries(handlers)) {
-      socket.on(event, handler);
-    }
+    socket.once('connect', onConnect);
+
+    const getGroceryList = (payload: unknown) => {
+      const grocerySet = GrocerySetSchema.parse(payload);
+      setGrocerySet(grocerySet);
+      setShopperText(grocerySet.shopper.name);
+    };
+
+    const groceryItemUpdated = (payload: unknown) => {
+      const data = GrocerySchema.parse(payload);
+      setGrocerySet((prev) => ({
+        ...prev,
+        items: prev.items.map((g) =>
+          g.idx === data.idx ? { ...g, ...data } : g,
+        ),
+      }));
+    };
+    const groceryAisleUpdated = (payload: unknown) => {
+      const data = z.array(AisleSchema).parse(payload);
+      setGrocerySet((prev) => ({ ...prev, aisles: data }));
+    };
+    const groceryItemDeleted = (payload: unknown) => {
+      const data = GrocerySchema.parse(payload);
+      setGrocerySet((prev) => ({
+        ...prev,
+        items: prev.items.filter((g) => g.idx !== data.idx),
+      }));
+    };
+    const addGroceryItem = (payload: unknown) => {
+      const data = GrocerySchema.parse(payload);
+      setGrocerySet((prev) => ({ ...prev, items: [...prev.items, data] }));
+    };
+    const clearGroceryList = () => {
+      setGrocerySet((prev) => ({ ...prev, items: [] }));
+    };
+    const resetGroceryList = () => {
+      setGrocerySet((prev) => ({
+        ...prev,
+        items: prev.items.map((g) => ({ ...g, isChecked: false })),
+      }));
+    };
+
+    socket.on('getGroceryList', getGroceryList);
+    socket.on('groceryItemUpdated', groceryItemUpdated);
+    socket.on('groceryAisleUpdated', groceryAisleUpdated);
+    socket.on('groceryItemDeleted', groceryItemDeleted);
+    socket.on('addGroceryItem', addGroceryItem);
+    socket.on('clearGroceryList', clearGroceryList);
+    socket.on('resetGroceryList', resetGroceryList);
+
+    socket.connect();
 
     return () => {
-      for (const [event, handler] of Object.entries(handlers)) {
-        socket.off(event, handler);
-      }
+      socket.off('connect', onConnect);
+      socket.off('getGroceryList', getGroceryList);
+      socket.off('groceryItemUpdated', groceryItemUpdated);
+      socket.off('groceryAisleUpdated', groceryAisleUpdated);
+      socket.off('groceryItemDeleted', groceryItemDeleted);
+      socket.off('addGroceryItem', addGroceryItem);
+      socket.off('clearGroceryList', clearGroceryList);
+      socket.off('resetGroceryList', resetGroceryList);
     };
   }, [shopperId]);
 
@@ -107,11 +113,11 @@ export default function useGroceries(shopperId: number) {
   };
 
   const clearGroceries = () => {
-    socket.emit('clearGroceryList');
+    socket.emit('clearGroceryList', shopperId);
   };
 
   const resetGroceries = () => {
-    socket.emit('resetGroceryList');
+    socket.emit('resetGroceryList', shopperId);
   };
 
   return {

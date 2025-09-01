@@ -3,8 +3,9 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { ResetGrocerySetService } from './resetGrocerySet.service';
+import { getShopperRoom } from 'src/utils/shared.service';
 
 @WebSocketGateway()
 export class ResetGrocerySetGateway {
@@ -13,8 +14,8 @@ export class ResetGrocerySetGateway {
   constructor(private readonly service: ResetGrocerySetService) {}
 
   @SubscribeMessage('resetGroceryList')
-  async handleMessage(): Promise<void> {
+  async handleMessage(client: Socket, payload: number): Promise<void> {
     await this.service.resetGrocerySet();
-    this.server.emit('resetGroceryList');
+    this.server.to(getShopperRoom(payload)).emit('resetGroceryList');
   }
 }
