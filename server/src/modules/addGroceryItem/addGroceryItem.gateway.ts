@@ -22,6 +22,7 @@ export class AddGroceryItemGateway {
     const existingItem = await this.service.getExistingEntity(payload);
 
     if (existingItem) {
+      console.log(`adding existing to ${payload.shopperId}`);
       this.server
         .to(getShopperRoom(payload.shopperId))
         .emit(
@@ -29,6 +30,7 @@ export class AddGroceryItemGateway {
           await this.service.getExistingGroceryItem(payload, existingItem),
         );
     } else {
+      console.log(`adding new to ${payload.shopperId}`);
       this.server
         .to(getShopperRoom(payload.shopperId))
         .emit('addGroceryItem', await this.service.getNewGroceryItem(payload));
