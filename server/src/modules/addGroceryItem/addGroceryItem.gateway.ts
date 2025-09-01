@@ -7,6 +7,7 @@ import { Server, Socket } from 'socket.io';
 import { AddGroceryItemService } from './addGroceryItem.service';
 import { GroceryAddRequest } from 'src/models/GroceryAddRequest';
 import { getShopperRoom } from 'src/utils/shared.service';
+import { Logger } from '@nestjs/common';
 
 @WebSocketGateway()
 export class AddGroceryItemGateway {
@@ -22,7 +23,7 @@ export class AddGroceryItemGateway {
     const existingItem = await this.service.getExistingEntity(payload);
 
     if (existingItem) {
-      console.log(`adding existing to ${payload.shopperId}`);
+      Logger.log(`adding existing to ${payload.shopperId}`);
       this.server
         .to(getShopperRoom(payload.shopperId))
         .emit(
@@ -30,7 +31,7 @@ export class AddGroceryItemGateway {
           await this.service.getExistingGroceryItem(payload, existingItem),
         );
     } else {
-      console.log(`adding new to ${payload.shopperId}`);
+      Logger.log(`adding new to ${payload.shopperId}`);
       this.server
         .to(getShopperRoom(payload.shopperId))
         .emit('addGroceryItem', await this.service.getNewGroceryItem(payload));

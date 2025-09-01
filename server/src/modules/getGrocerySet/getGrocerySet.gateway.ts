@@ -6,6 +6,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { GetGrocerySetService } from './getGrocerySet.service';
 import { getShopperRoom } from 'src/utils/shared.service';
+import { Logger } from '@nestjs/common';
 
 @WebSocketGateway()
 export class GetGrocerySetGateway {
@@ -17,9 +18,8 @@ export class GetGrocerySetGateway {
 
   @SubscribeMessage('getGroceryList')
   async handleMessage(client: Socket, payload: number): Promise<void> {
-    console.log(`Client joining shopper room ${payload}`);
     await client.join(getShopperRoom(payload));
-    console.log(`Client joined shopper room ${payload}`);
+    Logger.log(`Client joined shopper room ${payload}`);
     client.emit('getGroceryList', await this.service.getGrocerySet(payload));
   }
 }
