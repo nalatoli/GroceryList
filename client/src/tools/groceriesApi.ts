@@ -61,12 +61,10 @@ export default function useGroceries(shopperId: number) {
       },
 
       clearGroceryList: () => {
-        console.log('clearing');
         setGrocerySet((prev) => ({ ...prev, items: [] }));
       },
 
       resetGroceryList: () => {
-        console.log('resetting');
         setGrocerySet((prev) => ({
           ...prev,
           items: prev.items.map((g) => ({ ...g, isChecked: false })),
@@ -110,11 +108,11 @@ export default function useGroceries(shopperId: number) {
   };
 
   const clearGroceries = () => {
-    socket.emit('clearGroceryList');
+    socket.emit('clearGroceryList', shopperId);
   };
 
   const resetGroceries = () => {
-    socket.emit('resetGroceryList');
+    socket.emit('resetGroceryList', shopperId);
   };
 
   return {
