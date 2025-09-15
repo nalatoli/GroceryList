@@ -15,6 +15,7 @@ import { ClearGrocerySetGateway } from './modules/clearGrocerySet/clearGrocerySe
 import { ClearGrocerySetService } from './modules/clearGrocerySet/clearGrocerySet.service';
 import { ResetGrocerySetGateway } from './modules/resetGrocerySet/resetGrocerySet.gateway';
 import { ResetGrocerySetService } from './modules/resetGrocerySet/resetGrocerySet.service';
+import { GroceriesController } from './controllers/groceries.controller';
 
 @Module({
   imports: [
@@ -40,5 +41,6 @@ import { ResetGrocerySetService } from './modules/resetGrocerySet/resetGrocerySe
     ResetGrocerySetGateway,
     ResetGrocerySetService,
   ],
+  controllers: [GroceriesController],
 })
 export class AppModule {}
